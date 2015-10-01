@@ -19,6 +19,10 @@
   * Scott
 * Advanced
   * Fixed Point
+  * Pair
+  * List
+  * Nat
+
 ## Extra Feature
 
 * Evaluation
