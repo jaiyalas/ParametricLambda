@@ -1,26 +1,6 @@
-{-
+{-# LANGUAGE BangPatterns #-}
 
-\x.x x
-
-["lam","x",["app",["var","x"],["var","x"]]]
-
--}
-
-{- Nat -}
-data Nat = Zero
-         | Succ Nat
-         deriving (Show, Eq)
-
-{- Combinators -}
-
-cI = \x   -> x
-cK = \x y -> x
---
-cW = \f x   -> f x x
-cC = \f x y -> f y x
---
-cB = \f g x -> f (g x)
-cS = \f g x -> f x (g x)
+import Haha.Term
 
 {-Church Number -}
 
@@ -45,76 +25,50 @@ chSucc :: ChNum t -> ChNum t
 chSucc n = cS cB n
 --
 
-{- Expression -}
-
-newtype Lit = Lit Int deriving Show
-
-data Term = Abs (Lam ())
-          | App (Lam ()) Term
-          | Var Nat
-          | Lift Lit
-          deriving Show
-
-newtype Lam a = Lam Term deriving Show
-
-down :: Term -> Term
-down (Abs (Lam t)) = Abs $ Lam (down t)
-down (App (Lam t) t') = App (Lam $ down t) (down t')
-down (Var (Succ n)) = Var n
-down (Var Zero) = error ""
-down (Lift l) = Lift l
-
 subs :: Term -> Term -> Term
-subs (Abs (Lam bodyTerm)) t = Abs $ Lam $ subs bodyTerm t
-subs (App (Lam bodyTerm) argTerm) t = App (Lam $ subs bodyTerm t) argTerm
+subs Atom t = Atom
+subs (Abs bodyTerm) t = Abs (subs bodyTerm t)
+subs (App bodyTerm argTerm) t = App (subs bodyTerm t) (subs argTerm t)
 subs (Var Zero) t = t
-subs (Var n) t = Var n
-subs (Lift l) t = Lift l
+subs (Var (Succ n)) t = Var n
 
-sEval :: Term -> Term
-sEval (Lift l) = Lift l
-sEval (Var n) = Var n
-sEval (Abs lt) = Abs lt
-sEval (App (Lam (Abs (Lam bodyTerm))) argTerm) = sEval $ down $ subs bodyTerm argTerm
+evalCbV :: Term -> Term
+evalCbV Atom = Atom
+evalCbV (Var n) = Var n
+evalCbV (Abs lt) = Abs lt
+evalCbV (App (Abs bodyT) argT) = let !t' = (evalCbV argT) in
+    evalCbV $ subs bodyT t'
+evalCbV (App bodyT argT) = evalCbV $ App (evalCbV bodyT) (evalCbV argT)
 
-lift = Lift.Lit
-fun = Abs.Lam
-
-myI :: Term
-myI = fun $ Var Zero
-myK :: Term
-myK = fun $ fun $ Var Zero
-
-myW = -- \f x   -> f x x
-myC = -- \f x y -> f y x
-myB = -- \f g x -> f (g x)
-myS = -- \f g x -> f x (g x)
+evalCbN :: Term -> Term
+evalCbN Atom = Atom
+evalCbN (Var n) = Var n
+evalCbN (Abs lt) = Abs lt
+evalCbN (App (Abs bodyT) argT) = evalCbN $ subs bodyT argT
+evalCbN (App bodyT argT)       = evalCbN $ App (evalCbN bodyT) (evalCbN argT)
 
 
-s0 = \ s z -> z
-s1 = \ s z -> s s0
-s2 = \ s z -> s s1
+{- Combinators -}
 
-s1 = \ s z -> s (\ s0 z0 -> z0)
+cI = \x   -> x
+cK = \x y -> x
+cW = \f x   -> f x x
+cC = \f x y -> f y x
+cB = \f g x -> f (g x)
+cS = \f g x -> f x (g x)
 
-eqZero n = n (\m -> false) true
+myI = fun v0
+myK = fun (fun v0)
+myW = fun $ fun $ (v0 <> v1) <> v1
+myC = fun $ fun $ fun $ (v0 <> v2) <> v1
+myB = fun $ fun $ fun $ v0 <> (v1 <> v2)
+myS = fun $ fun $ fun $ (v0 <> v2) <> (v1 <> v2)
 
-   eqZero s1
-=> (\n -> n (\m -> false) true) s1
-=> s1 (\m -> false) true
-=> (\ s z -> s (\ s0 z0 -> z0))
-       (\m -> false)
-       true
-=> (\m -> false) (\ s0 z0 -> z0)
-=> false
+myo = fun (v0 <> v0)
+myO = myo <> myo
 
-
-   eqZero s0
-=> (\n -> n (\m -> false) true) s0
-=> s0 (\m -> false) true
-=> (\ s z -> z) (\m -> false) true
-=> (\   z -> z) true
-=> true
+main = do
+    putStrLn $ pretty myS
 
 
 
