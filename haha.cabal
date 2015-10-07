@@ -1,0 +1,22 @@
+name:               haha
+version:            0.0.1
+description:        Haskell on Haskell
+author:             Yun-Yan Chi
+maintainer:    	    jaiyalas@gmail.com
+License:             MIT
+build-type:         Simple
+cabal-version:      >= 1.2
+
+executable haha
+  main-is:          main.hs
+  ghc-options:      -O2
+  hs-source-dirs:  src
+
+library
+  ghc-options:     -Wall -O2
+  hs-source-dirs:  src
+  exposed-modules:
+    Haha.Lambda.NamedVar.Term
+    Haha.Lambda.NamedVar.Substitution
+  build-depends:
+    base >= 4 && < 5
