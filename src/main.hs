@@ -10,4 +10,4 @@ f4 = fun "z" $ fun "u" $ Var "u"
 
 main :: IO ()
 main = do
-  putStrLn $ show f2
+  putStrLn $ show f2 f1
