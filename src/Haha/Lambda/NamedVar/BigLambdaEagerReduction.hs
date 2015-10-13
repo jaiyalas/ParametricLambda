@@ -6,6 +6,8 @@ module Haha.Lambda.NamedVar.BigLambdaEagerReduction
 
 import Haha.Lambda.NamedVar.Term
 
+-- TODO:  beta-redex
+
 betaRed :: Term -> Term
 betaRed (Var y)   = (Var y)
 betaRed (Abs y t) = Abs y (betaRed t)
