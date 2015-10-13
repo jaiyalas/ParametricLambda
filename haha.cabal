@@ -8,15 +8,25 @@ build-type:         Simple
 cabal-version:      >= 1.2
 
 executable haha
-  main-is:          main.hs
-  ghc-options:      -O2
   hs-source-dirs:  src
+  main-is:          Eager.hs
+  ghc-options:      -threaded -O2
 
 library
   ghc-options:     -Wall -O2
   hs-source-dirs:  src
   exposed-modules:
-    Haha.Lambda.NamedVar.Term
-    Haha.Lambda.NamedVar.Substitution
+    Haha.MyBrick
+    -- Haha.Lambda.NamedVar.Term
+    Haha.Lambda.NamedVar.NameSugar
+    Haha.Lambda.NamedVar.BigLambdaEagerReduction
+    Haha.Lambda.NamedVar.Num
   build-depends:
-    base >= 4 && < 5
+    base >= 4 && < 5,
+    brick == 0.2.*,
+    lens == 4.13.*,
+    vector == 0.11.*,
+    vty >=5.3.1,
+    containers >= 0.5.6,
+    data-default == 0.5.*,
+    text == 1.2.*
