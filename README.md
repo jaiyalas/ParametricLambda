@@ -6,16 +6,10 @@
 
 Build a tiny Haskell on Haskell.
 
-## Stage 1
+## Todo
 
-1. Build my own lambda evaluator.
-2. Deriving a VM and a compiler.
-3. Speedup
-
-## Stage 2
-
-TBD
-
-## Stage 3
-
-TBD
++ 想辦法解決 InputSet (Γ/γ/Λ) 的問題
+  + 也許 functional dependency 會是個好辦法?
++ Build my own lambda evaluator.
++ Deriving a VM and a compiler.
++ Speedup
