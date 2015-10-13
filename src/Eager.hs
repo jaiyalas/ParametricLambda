@@ -37,20 +37,10 @@ instance MenuShow Term where
   menuShow t = cutLength 90 $ pretty t
 --
 instance TriPanel Term where
-  headerT ts l = str "[oringinal]"
-  headerF ts l | Nothing <- l ^. listSelectedL = str "-"
-  headerF ts l | Just i  <- l ^. listSelectedL = str $
-    cutLength 100 $ show $ ts !! i
-
-  --
-  mainT   ts l = str "[Formal Form]"
   mainF   ts l | Nothing <- l ^. listSelectedL = str "-"
   mainF   ts l | Just i  <- l ^. listSelectedL =
     let res = betaRed $ ts !! i
     in str $ cutLength 100 $ (pretty res) ++ "\n\n" ++ (show res)
-
-  --
-  footT   ts l = str "[Free variables]"
   footF   ts l | Nothing <- l ^. listSelectedL = str "-"
   footF   ts l | Just i  <- l ^. listSelectedL = case (ts !! i) of
     (App (Abs a t) q) -> str $
