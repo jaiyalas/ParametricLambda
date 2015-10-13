@@ -1,4 +1,4 @@
-name:               haha
+name:               JaiHaha
 version:            0.0.1
 description:        Haskell on Haskell
 author:             Yun-Yan Chi
@@ -7,7 +7,7 @@ License:             MIT
 build-type:         Simple
 cabal-version:      >= 1.2
 
-executable haha
+executable JaiHaha
   hs-source-dirs:  src
   main-is:          Eager.hs
   ghc-options:      -threaded -O2
