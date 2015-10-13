@@ -17,10 +17,10 @@ library
   hs-source-dirs:  src
   exposed-modules:
     Haha.MyBrick
-    -- Haha.Lambda.NamedVar.Term
+    Haha.Lambda.NamedVar.Term
     Haha.Lambda.NamedVar.NameSugar
     Haha.Lambda.NamedVar.BigLambdaEagerReduction
-    Haha.Lambda.NamedVar.Num
+    -- Haha.Lambda.NamedVar.Num
   build-depends:
     base >= 4 && < 5,
     brick >= 0.2,
