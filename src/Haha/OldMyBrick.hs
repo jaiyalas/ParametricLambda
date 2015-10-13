@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Haha.MyBrick
+module Haha.OldMyBrick
   (initMain
   , TriPanel (..)
   , MenuShow (..)
@@ -41,8 +41,12 @@ class Show a => MenuShow a where
   menuShow :: a -> String
 
 class Show a => TriPanel a where
+  headerF :: [a] -> L.List a -> Widget
   mainF   :: [a] -> L.List a -> Widget
   footF   :: [a] -> L.List a -> Widget
+  headerT :: [a] -> L.List a -> Widget
+  mainT   :: [a] -> L.List a -> Widget
+  footT   :: [a] -> L.List a -> Widget
 
 drawUI :: (Eq a, TriPanel a, MenuShow a) => [a] -> L.List a -> [Widget]
 drawUI ts l = [ui]
@@ -51,10 +55,15 @@ drawUI ts l = [ui]
         ui = vBox [ padTopBottom 0 $ menu
                     , B.hBorder
                     , vBox [
-                        C.vCenter $ C.hCenter $ mainF ts l
+                          padTopBottom 0 $ vLimit 4 $ hBox [
+                              padLeftRight 0 $ headerT ts l
+                              , padLeftRight 1 $ C.hCenter $ C.vCenter $ headerF ts l]
+                        , B.hBorder
+                        , padTopBottom 0 $ mainT ts l
+                        , C.vCenter $ C.hCenter $ mainF ts l
                         , B.hBorder
                         , padTopBottom 0 $ vLimit 1 $ hBox [
-                              padLeftRight 0 $ str $ "[Info]"
+                              padLeftRight 0 $ footT ts l
                               , padLeftRight 1 $ footF ts l]
                         ]
                     ]
