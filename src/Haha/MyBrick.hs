@@ -1,12 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Haha.MyBrick
   (initMain
-  , TriPanel (..)
-  , MenuShow (..)
+  , Display (..)
+  , ShowMenu (..)
   ) where
 
 import Control.Monad (void)
+import Control.Lens (_1,_2,(%~),(&),makeLenses,(^.))
 import Data.Monoid ((<>))
 import Data.List (elemIndices)
 import qualified Data.Vector (fromList)
@@ -24,7 +27,7 @@ import Brick.Widgets.Core
   ( (<+>)
   , str
   , vLimit
-  -- , hLimit
+  , hLimit
   , hBox
   , vBox
   , withAttr
@@ -34,72 +37,90 @@ import Brick.Widgets.Core
   -- , padBottom
   , padTopBottom
   , padLeftRight
+  , viewport
+  , visible
   )
 import Brick.Util (fg, on)
 
-class Show a => MenuShow a where
-  menuShow :: a -> String
+data Select = Select {_termIdx :: Int, _isIdx :: Int}
+            deriving Show
 
-class Show a => TriPanel a where
-  mainF   :: [a] -> L.List a -> Widget
-  footF   :: [a] -> L.List a -> Widget
+makeLenses ''Select
 
-drawUI :: (Eq a, TriPanel a, MenuShow a) => [a] -> L.List a -> [Widget]
-drawUI ts l = [ui]
-    where
-        menu = vLimit 3 $ L.renderList l (listDrawElement ts)
-        ui = vBox [ padTopBottom 0 $ menu
-                    , B.hBorder
-                    , vBox [
-                        C.vCenter $ C.hCenter $ mainF ts l
-                        , B.hBorder
-                        , padTopBottom 0 $ vLimit 1 $ hBox [
-                              padLeftRight 0 $ str $ "[Info]"
-                              , padLeftRight 1 $ footF ts l]
-                        ]
-                    ]
-
--- event handler for keyboard events
-appEvent :: L.List a -> V.Event -> T.EventM (T.Next (L.List a))
-appEvent l e =
-    case e of
-        V.EvKey V.KEsc [] -> M.halt l
-        ev -> M.continue =<< T.handleEvent ev l
-
--- how to draw list
-listDrawElement :: (Eq a, MenuShow a) => [a] -> Bool -> a -> Widget
-listDrawElement ts sel i =
-    let selStr s = if sel
-                   then withAttr customAttr (str $ s)
-                   else str s
-    in     str (show $ (+1) $ Prelude.head $ elemIndices i ts)
-       <+> str "/"
-       <+> str (show $ Prelude.length ts)
-       <+> str ") " <+> (selStr $ menuShow i)
-    -- in C.hCenter $ str "> " <+> (selStr $ menuShow i)
-
-customAttr :: A.AttrName
-customAttr = L.listSelectedAttr <> "custom"
-
+termdAttr :: A.AttrName
+termdAttr = "term"
+isetAttr :: A.AttrName
+isetAttr = "iset"
+menuAttr :: A.AttrName
+menuAttr = "menu"
 theMap :: A.AttrMap
 theMap = A.attrMap V.defAttr
-    [ (L.listAttr,            V.white `on` V.blue)
-    , (L.listSelectedAttr,    V.red `on` V.white)
-    , (customAttr,            fg V.black)
+    [ (termdAttr,  V.black `on` V.yellow)
+    , (isetAttr, V.white `on` V.red)
+    , (menuAttr,  V.white `on` V.blue)
     ]
 
-initialState :: [a] -> L.List a
-initialState terms = L.list (T.Name "list") (Data.Vector.fromList terms) 1
+class (Show a, Show b) => Display a b where
+  mainWidget :: a -> b -> String
+  footWidget :: a -> b -> String
 
-theApp :: (Eq a, TriPanel a, MenuShow a) => [a] -> M.App (L.List a) V.Event
-theApp ts =
-    M.App { M.appDraw = drawUI ts
-          , M.appChooseCursor = M.showFirstCursor
-          , M.appHandleEvent = appEvent
-          , M.appStartEvent = return
-          , M.appAttrMap = const theMap
-          , M.appLiftVtyEvent = id
-          }
+class Show a => ShowMenu a where
+  showMenu :: a -> String
 
-initMain :: (Eq a, TriPanel a, MenuShow a) => [a] -> IO ()
-initMain ts = void $ M.defaultMain (theApp ts) (initialState ts)
+drawUI :: (ShowMenu a, ShowMenu b, Display a b) => [a] -> [b] -> Select -> [Widget]
+drawUI ts iss st =
+    let ui = -- C.center $ hLimit 60 $ vLimit 30 $
+             vBox [ padTopBottom 0 $ withAttr menuAttr $ vLimit 3 $
+                      hBox [ menuA
+                           , B.vBorder
+                           , hLimit 5 $ menuB ]
+                  , B.hBorder -- ################################## --
+                  , C.vCenter $ C.hCenter $ str $
+                      mainWidget (ts !! (st^.termIdx - 1)) (iss !! (st^.isIdx - 1))
+                  , B.hBorder -- ################################## --
+                  , padTopBottom 0 $ vLimit 1 $
+                      hBox [ padLeftRight 0 $ str $ "[Message]"
+                           , padLeftRight 1 $ str $ footWidget (ts !! (st^.termIdx - 1))
+                                                               (iss !! (st^.isIdx - 1))
+                           ]
+                  ]
+        menuA = viewport "Terms" T.Vertical $
+                  vBox $ do
+                      i <- [1..length ts]
+                      let mkItem = if i == st^.termIdx
+                                   then withAttr termdAttr . visible
+                                   else id
+                          menuStr = " " <> showMenu (ts !! (i - 1)) <> " "
+                      return $ mkItem $ str $ show i <> "." <> menuStr
+        menuB = viewport "InputSets" T.Vertical $
+                  vBox $ do
+                      i <- [1..length iss]
+                      let mkItem = if i == st^.isIdx
+                                   then withAttr isetAttr . visible
+                                   else id
+                          menuStr = " " <> showMenu (iss !! (i - 1)) <> " "
+                      return $ C.hCenter $ mkItem $ str $ menuStr
+    in [ui]
+
+appEvent :: Int -> Int -> Select -> V.Event -> T.EventM (T.Next Select)
+appEvent s1 s2 st (V.EvKey V.KDown  []) = M.continue $ st & termIdx %~ min s1 . (+ 1)
+appEvent s1 s2 st (V.EvKey V.KUp    []) = M.continue $ st & termIdx %~ max 1 . subtract 1
+appEvent s1 s2 st (V.EvKey V.KRight []) = M.continue $ st & isIdx %~ min s2 . (+ 1)
+appEvent s1 s2 st (V.EvKey V.KLeft  []) = M.continue $ st & isIdx %~ max 1 . subtract 1
+appEvent s1 s2 st (V.EvKey V.KEsc   []) = M.halt st
+appEvent s1 s2 st _ = M.continue st
+
+theApp :: (ShowMenu a, ShowMenu b, Display a b) => [a] -> [b] -> M.App Select V.Event
+theApp ts iss = M.App { M.appDraw         = drawUI ts iss
+                      , M.appAttrMap      = const theMap
+                      , M.appHandleEvent  = appEvent (length ts) (length iss)
+                      , M.appStartEvent   = return
+                      , M.appLiftVtyEvent = id
+                      , M.appChooseCursor = M.neverShowCursor
+                      }
+
+initialState :: Select
+initialState = Select 1 1
+
+initMain :: (ShowMenu a, ShowMenu b, Display a b) => [a] -> [b] -> IO ()
+initMain ts iss = void $ M.defaultMain (theApp ts iss) initialState
