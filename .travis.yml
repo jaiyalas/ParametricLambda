@@ -1,7 +1,12 @@
 
 language: haskell
-ghc: 7.10
+ghc:
+  7.10.2
+
 script:
-  - "cabal configure && cabal build"
+  - cabal configure
+  - cabal install --only-dependencies
+  - cabal build
+
 notifications:
-  email: true
+  slack: jaiyalas:rTERqdvyJZbXGRYxy3SLKAtq
