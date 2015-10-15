@@ -1,6 +1,10 @@
 # This file has been generated -- see https://github.com/hvr/multi-ghc-travis
 language: c
 
+branches:
+  only:
+    - stable
+
 matrix:
   include:
     - env: CABALVER=1.22 GHCVER=head
