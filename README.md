@@ -1,6 +1,6 @@
 # ParametricLambda
 
-[![Build Status](https://api.travis-ci.org/jaiyalas/ParametricLambda.png?branch=master)](http://travis-ci.org/jaiyalas/ParametricLambda)
+[![Build Status](https://api.travis-ci.org/jaiyalas/ParametricLambda.png?branch=stable)](http://travis-ci.org/jaiyalas/ParametricLambda)
 [![MIT](http://b.repl.ca/v1/license-MIT-blue.png)](https://en.wikipedia.org/wiki/MIT_License)
 [![Haskell](http://b.repl.ca/v1/language-haskell-orange.png)](http://haskell.org)
 
