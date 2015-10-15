@@ -44,14 +44,3 @@ Build Parametric Lambda Calculus.
   + native function as primitive, i.e. `Fun (f :: F a -> G a) ∈ Λ+` where F, G are functors
 + [**Extend**] weak-, aka lazy-, evaluation  
 + [**Fantasy**] Type system (SystemF???)
-
-## Extra Feature
-
-* Evaluation
-  + Eval to Λ-NF
-  + Eval to Λ-HNF
-  + Eval to Λ-WHNF
-  + Eval to Ξ-NF
-  + Eval to Ξ-HNF
-  + Eval to Ξ-WHNF
-  + call-by-need
