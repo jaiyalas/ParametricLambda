@@ -1,46 +1,71 @@
+{-# LANGUAGE PatternGuards #-}
+
 module Haha.Lambda.NamedVar.Reduction
-    ( replaceable
-    , replace
-    , alphaConv
-    , renaming
+    ( rNF
+    , rHNF
+    , reduce1
+    , isNF
+    , isHNF
     ) where
 
 
 import Haha.Lambda.NamedVar.Term
-import Haha.Lambda.NamedVar.NameSugar
 import Haha.Lambda.NamedVar.InputSet
 import Haha.Lambda.NamedVar.Redex
 
+rNF :: InputSet -> Term -> Maybe Term
+rNF is (Var a)   = Just (Var a)
+rNF is (Abs a t) | Just u <- rNF is t = if t == u
+                    then Nothing else Just (Abs a u)
+rNF is (Abs a t) | Nothing <- rNF is t = Nothing
+rNF is (App p q) | Just s <- rNF is p
+                 | Just t <- rNF is q
+                 = if (s == p || t == q)
+                     then Nothing
+                     else if isRedex is (App s t)
+                          then if u == (App s t) then Nothing else rNF u
+                              where u = reduce1 is (App s t)
+                          else Just (App s t)
+rNF is (App p q) | otherwise
+                 = Nothing
+
+rHNF :: InputSet -> Term -> Maybe Term
+rHNF = rNF
+
+isNF :: InputSet -> Term -> Bool
+isNF = undefined
+
+isHNF :: InputSet -> Term -> Bool
+isHNF = undefined
+
+reduce1 :: InputSet -> Term -> Term
+reduce1 is (Var a)   = Var a
+reduce1 is (Abs a t) = Abs a (reduce1 is t)
+
+reduce1 is (App p q) |
+
+
+reduce1 is (App p q) | not $ inInputSet is q
+                     , isRedex is q
+                     = App p (reduce1 is q)
+reduce1 is (App p q) | not $ inInputSet is q
+                     , not $ isRedex is q
+                     , not $ isRedex is p
+                     = (App p q)
 --
--- T[U/x]
--- U is free for x in T
-replaceable :: Term -> Term -> VName -> Bool
-replaceable (Var _)   _ _ = True
-replaceable (App p q) m x =
-    replaceable p m x && replaceable q m x
-replaceable (Abs y t) m x = x /= y
-    && notElem (Var y) (fv m)
-    && replaceable t m x
+reduce1 is (App p q) | not $ inInputSet is q
+                     , not $ isRedex is q
+                     , isRedex is p
+                     , isHNF is p
+                     = subs t q a where (Abs a t) = p
 
--- replacement T[U/x]
--- replaceable t u x |=
-replace :: Term -> Term -> VName -> Term
-replace (App p q) u x = App (replace p u x) (replace q u x)
-replace (Var a)   u x | a == x = u
-                      | a /= x = (Var a)
-replace (Abs a t) u x | a == x = (Abs a t)
-                      | a /= x = Abs a (replace t u x)
 
-alphaConv :: VName -> Term -> Term
-alphaConv z (App p q) = App (alphaConv z p) (alphaConv z q)
-alphaConv z (Var a)   | z == a = Var (a++a)
-alphaConv z (Var a)   | z /= a = Var a
-alphaConv z (Abs a t) | z == a = Abs (a++a) (alphaConv z t)
-alphaConv z (Abs a t) | z /= a = Abs a (alphaConv z t)
+reduce1 is (App p q) | not $ isHNF is p,
+                     = reduce1 is (App p q)
 
--- given a list of variables, TS, and a term U,
--- renaming every lambda binding listed on TS in U
-renaming :: [Term] -> Term -> Term
-renaming []           u = u
-renaming (t:ts) u | (Var a)<- t = renaming ts (alphaConv a u)
-                  | otherwise   = error "non-variable show up from function \"renaming\""
+
+
+--
+reduce1 is (App p q) | isHNF is p
+                     , (Abs a t) <- p
+                     = subs t q a

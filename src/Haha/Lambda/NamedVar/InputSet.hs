@@ -33,3 +33,9 @@ inInputSet :: InputSet -> Term -> Bool
 inInputSet IS_Lambda = in_Lambda
 inInputSet IS_Gamma  = in_Gamma
 inInputSet IS_gamma  = in_gamma
+
+isRedex :: InputSet -> Term -> Bool
+isRedex is (Var _)   = False
+isRedex is (Abs p q) = False
+isRedex is (App (Abs _ _) q) = inInputSet is q
+isRedex is (App p         q) = False
