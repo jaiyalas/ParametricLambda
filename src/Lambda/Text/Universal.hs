@@ -1,4 +1,4 @@
-module Lambda.Text.Lambda
+module Lambda.Text.Universal
   ( module Lambda.Text.Term
   , module Lambda.Text.NameSugar
   , module Lambda.Text.InputSet
