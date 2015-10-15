@@ -39,3 +39,8 @@ isRedex is (Var _)   = False
 isRedex is (Abs p q) = False
 isRedex is (App (Abs _ _) q) = inInputSet is q
 isRedex is (App p         q) = False
+
+data NormalForm = NF
+                | HNF
+                -- | WHNF
+                deriving (Show, Eq, Ord)
