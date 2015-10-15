@@ -11,8 +11,6 @@ module BrickUI.MyBrick
 import Control.Monad (void)
 import Control.Lens (_1,_2,(%~),(&),makeLenses,(^.))
 import Data.Monoid ((<>))
-import Data.List (elemIndices)
-import qualified Data.Vector (fromList)
 
 import qualified Graphics.Vty as V
 import qualified Brick.Main as M
