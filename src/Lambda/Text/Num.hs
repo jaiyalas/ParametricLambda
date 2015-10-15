@@ -23,6 +23,9 @@ ch3 = chS <> ch2 -- \ f x -> f (ch2 f x) -- f (f (f x))
 ch4 = chS <> ch3
 ch5 = chS <> ch4
 
+(~+~) :: Term -> Term -> Term
+m ~+~ n = m <> chS <> n
+
 --Scott
 scZ = \f x -> x
 scS = \n f x -> f n
