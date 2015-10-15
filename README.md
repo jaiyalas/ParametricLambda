@@ -1,46 +1,49 @@
 # ParametricLambda
 
-[![Build Status](https://api.travis-ci.org/jaiyalas/ParametricLambda.png?branch=master)](http://travis-ci.org/jaiyalas/ParametricLambda)
+[![Build Status](https://api.travis-ci.org/jaiyalas/ParametricLambda.png?branch=stable)](http://travis-ci.org/jaiyalas/ParametricLambda)
 [![MIT](http://b.repl.ca/v1/license-MIT-blue.png)](https://en.wikipedia.org/wiki/MIT_License)
 [![Haskell](http://b.repl.ca/v1/language-haskell-orange.png)](http://haskell.org)
 
 Build Parametric Lambda Calculus.
 
+## Under developing
+
+* Reduction
+  + Δ-redex
+  + →Δ
+  + →\*Δ
+  + →pΔ
+  + →p\*Δ
+* oo-NF
+  + Δ-NF
+  + Δ-NHF
+* Input Set
+  + γ
+  + Γ
+  + ΛI
+  + Ξ
+  + Var ∪ Λ-NF0
+
 ## Todo
 
-+ 想辦法解決 InputSet (Γ/γ/Λ) 的問題
-  + 也許 functional dependency 會是個好辦法?
-+ 擴充 Term 成可以用 zipper
-  + 方案 A: ` data TermWithHead = ... `
-  + 方案 B: 用 one-hole context 訂個 `TermZipper`
-+ Build my own lambda evaluator.
-+ Deriving a VM and a compiler.
-+ Speedup
-
-# Lambda Evaluator
-
-* Definition
-  * <del>basic definition</del>
-  * <del>show</del>
-  * <del>pretty print</del>
-  * read
-  * <del>de Bujin index</del>
-* Basic Evaluation
-  * <del>call-by-value</del>
-  * call-by-name
-* Combinator
-  * <del>I/K/S</del>
-  * <del>C/B/W</del>
-  * <del>ω/Ω</del>
-  * Y
-* Encoding
-  * Church
-  * Scott
-* Advanced
-  * Fixed Point
-  * Pair
-  * List
-  * Nat
++ [**Generalize**] `data Term` for exposing *HEAD* or presenting the result of *sequentialization* with..  
+  + A: define `data TermWithHead = ... `
+  + B: apply the legendary *one-hole context* for `data TermZipper`
++ [**Generalize**] variable type - *Text*? *Integer*?
++ [**Implment**] encoding systems
+  + *Church* encoding
+  + *Scott* encoding
+  + *Church-Scott* encoding
+  + generalization..?!
++ [**Implment**] SKI combinators
++ [**Implment**] recursion via Y combinator
++ [**Implment**] operational semantics
++ [**Extend**] Polynomial functors as data structures
++ [**Extend**] speedup
+  + native type as primitive, i.e. `∀ a . Lit a ∈ Λ+`
+  + native function as primitive, i.e. `Fun (f :: F a -> G a) ∈ Λ+` where F, G are functors
++ [**Extend**] weak-, aka lazy-, evaluation  
++ [**Fantasy**] Type system (SystemF???)
 
 ## Extra Feature
 
@@ -52,8 +55,3 @@ Build Parametric Lambda Calculus.
   + Eval to Ξ-HNF
   + Eval to Ξ-WHNF
   + call-by-need
-* MV
-  + Instructions Definition
-  + deriving VM
-* Multi-Stage
-  + ???
