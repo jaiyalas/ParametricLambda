@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Haha.OldMyBrick
+module BrickUI.OldMyBrick
   (initMain
   , TriPanel (..)
   , MenuShow (..)

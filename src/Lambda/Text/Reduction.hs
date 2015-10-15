@@ -1,6 +1,6 @@
 {-# LANGUAGE PatternGuards #-}
 
-module Haha.Lambda.NamedVar.Reduction
+module Lambda.Text.Reduction
     ( rNF
     , rHNF
     , reduce1
@@ -9,9 +9,9 @@ module Haha.Lambda.NamedVar.Reduction
     ) where
 
 
-import Haha.Lambda.NamedVar.Term
-import Haha.Lambda.NamedVar.InputSet
-import qualified Haha.Lambda.NamedVar.Substitution as S
+import Lambda.Text.Term
+import Lambda.Text.InputSet
+import qualified Lambda.Text.Substitution as S
 
 reduce2NF :: NormalForm -> InputSet -> Term -> Term
 reduce2NF nf ips t = undefined

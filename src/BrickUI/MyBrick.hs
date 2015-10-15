@@ -2,7 +2,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module Haha.MyBrick
+module BrickUI.MyBrick
   (initMain
   , Display (..)
   , ShowMenu (..)

@@ -1,6 +1,6 @@
 {-# LANGUAGE PatternGuards #-}
 
-module Haha.Lambda.NamedVar.Term
+module Lambda.Text.Term
     ( VName
     , Term (..)
     , pretty

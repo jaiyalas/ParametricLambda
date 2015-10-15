@@ -1,7 +1,7 @@
-module Haha.Lambda.NamedVar.Num where
+module Lambda.Text.Num where
 
-import Haha.Lambda.NamedVar.Term
-import Haha.Lambda.NamedVar.NameSugar
+import Lambda.Text.Term
+import Lambda.Text.NameSugar
 
 data Nat = S Nat | Z deriving (Eq, Ord)
 

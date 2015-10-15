@@ -1,7 +1,7 @@
-module Haha.Lambda.NamedVar.InputSet where
+module Lambda.Text.InputSet where
 
-import Haha.Lambda.NamedVar.Term
-import Haha.Lambda.NamedVar.NameSugar
+import Lambda.Text.Term
+import Lambda.Text.NameSugar
 
 -- Γ γ Ξ ξ Δ δ Λ λ
 data InputSet = IS_Lambda

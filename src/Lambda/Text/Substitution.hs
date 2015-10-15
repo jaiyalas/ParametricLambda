@@ -1,6 +1,6 @@
 {-# LANGUAGE PatternGuards #-}
 
-module Haha.Lambda.NamedVar.Substitution
+module Lambda.Text.Substitution
     ( replaceable
     , replace
     , subs
@@ -8,8 +8,8 @@ module Haha.Lambda.NamedVar.Substitution
     , renaming
     ) where
 --
-import Haha.Lambda.NamedVar.Term
-import Haha.Lambda.NamedVar.InputSet
+import Lambda.Text.Term
+import Lambda.Text.InputSet
 
 --
 -- T[U/x]

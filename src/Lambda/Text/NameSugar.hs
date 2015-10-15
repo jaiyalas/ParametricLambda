@@ -1,6 +1,6 @@
-module Haha.Lambda.NamedVar.NameSugar where
+module Lambda.Text.NameSugar where
 
-import Haha.Lambda.NamedVar.Term
+import Lambda.Text.Term
 
 ns, nt, nu, nv, nw, nx, ny, nz :: VName
 nf = "f"

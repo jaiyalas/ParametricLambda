@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE PatternGuards #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE PatternGuards #-}
 
 module Main where
 
-import Haha.Lambda.NamedVar.Lambda
-import Haha.MyBrick
+import Lambda.Text.Universal
+import BrickUI.MyBrick
 
 --
 
