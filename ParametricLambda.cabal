@@ -1,0 +1,29 @@
+name:               ParametricLambda
+version:            0.0.1
+description:        Parametric Lambda Calculus
+author:             Yun-Yan Chi
+maintainer:    	    jaiyalas@gmail.com
+License:            MIT
+build-type:         Simple
+cabal-version:      >= 1.2
+
+executable Main
+  hs-source-dirs:   src
+  main-is:          Main.hs
+  ghc-options:      -threaded -O2
+
+library
+  hs-source-dirs:   src
+  exposed-modules:
+    BrickUI.MyBrick
+    Lambda.Text.Universal
+  build-depends:
+    base           >= 4 && < 5,
+    brick          >= 0.2,
+    lens           >= 4.13,
+    vector         >= 0.11,
+    vty            >= 5.3.1,
+    containers     >= 0.5.6,
+    data-default   >= 0.5,
+    text           >= 1.2
+  ghc-options:     -threaded -O2
