@@ -9,20 +9,21 @@ Build Parametric Lambda Calculus.
 ## Under developing
 
 * Reduction
-  + Δ-redex
-  + →Δ
-  + →\*Δ
-  + →pΔ
-  + →p\*Δ
+  + [X] Δ-redex
+  + [ ] →Δ
+  + [ ] →\*Δ
+  + [ ] →pΔ
+  + [ ] →p\*Δ
 * oo-NF
-  + Δ-NF
-  + Δ-NHF
+  + [ ] Δ-NF
+  + [ ] Δ-NHF
 * Input Set
-  + γ
-  + Γ
-  + ΛI
-  + Ξ
-  + Var ∪ Λ-NF0
+  + [X] Λ  
+  + [ ] γ
+  + [X] Γ
+  + [ ] ΛI
+  + [ ] Ξ
+  + [ ] Var ∪ Λ-NF0
 
 ## Todo
 
